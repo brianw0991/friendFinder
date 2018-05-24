@@ -178,3 +178,67 @@
     </div>
 </body>
 </html>
+
+     <!-- Modal -->
+     <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+          <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"></button>
+                  <h2 class="modal-title">Best Match</h2>
+                </div>
+                <div class="modal-body text-center">
+                  <h2 id="nameOfMatch"></h2>
+                  <p id="imageHolder"></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+          </div>
+          </div>
+
+<script type="text/javascript">
+
+    $("#submitButton").on("click", function(){
+        var newFriend = {
+            name: $("#nameInput").val().trim(),
+            photo: $("#urlInput").val().trim(),
+            scores: [$("#question1").val().trim(), $("#question2").val().trim(), $("#question3").val().trim(), $("#question4").val().trim(), $("#question5").val().trim(), $("#question6").val().trim(), $("#question7").val().trim(), $("#question8").val().trim(), $("#question9").val().trim(), $("#question10").val().trim(),]
+        }
+
+    var currentURL = window.location.origin;
+    console.log(newFriend);
+
+    $.post(currentURL + "/api/friends", newFriend)
+        .done(function(data){
+            var oldFriends = [];
+            for (var i = 0; i < data.length; i++){
+                oldFriends.push(data[i].scores);
+            }
+            var score=0;
+            var scoreArray=[];
+
+            function difference(a,b) {return Math.abs(a -b);}
+
+            for (var i = 0; i < oldFriends.length-1; i++) {
+                for (var j = 0; j < 10; i++){
+                    score += difference(oldFriends[i][j], oldFriends.length-1[j]);
+                }
+                    scoreArray.push(score);
+                    score=0;
+            }
+
+            var indexInArray = scoreArray.indexOf(Math.min(...scoreArray));
+            
+            $("#nameOfMatch").html(data[indexInArray].name);
+            $("#imageHolder").html(data[indexInArray].photo);
+            $("#myModal").modal("toggle");
+        });
+        var currentURL = window.location.origin;
+        return false;
+    });
+
+
+</script>
